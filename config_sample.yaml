@@ -1,0 +1,11 @@
+models:
+  model1:
+    name: "model1"
+    path: "/models/model1"
+    handler: "/etc/handler.py"
+    workers: 2
+  model2:
+    name: "model2"
+    path: "/models/model2"
+    handler: "/etc/handler.py"
+    workers: 3
