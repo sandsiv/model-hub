@@ -1,5 +1,14 @@
 # ModelHub: A More Flexible TorchServe Alternative for Vertex AI
 
+---
+
+<img width="300" src="doc/logo/docker-hub-logo.png" border="5px solid red"/>
+<img width="300" src="doc/logo/vertex-logo.png" border="5px solid red"/>
+
+This application is also available as a Docker image, which you can find on [Docker Hub](https://hub.docker.com/r/devxpro/model-hub).
+This image is fully compatible for use with [Vertex AI](https://cloud.google.com/vertex-ai).
+
+---
 **ModelHub** is an elegant, Golang-based alternative to **TorchServe**, offering a swift and flexible service for deploying and managing machine learning models. ModelHub stands out with its advanced metrics, broad compatibility, and seamless integration with **Vertex AI**.
 
 ModelHub is not limited to Torch models; it can be used with any Python-based machine learning models, providing a versatile solution for model deployment and management.
