@@ -3,6 +3,7 @@ services:
   model-hub:
     build: .
     tty: true
+    container_name: model-hub
     environment:
       - SERVER_PORT=8080
       - CONFIG_PATH=/etc/config.yaml

@@ -51,7 +51,7 @@ func (wm *WorkerManager) logResourceUsage() {
 
 		var cpuInfoBuilder strings.Builder
 		for i, percentage := range percentages {
-			cpuInfoBuilder.WriteString(fmt.Sprintf("Core%d: %.2f%%|", i, percentage))
+			cpuInfoBuilder.WriteString(fmt.Sprintf("Core %d: %.2f%% | ", i+1, percentage))
 		}
 
 		cpuInfo := strings.TrimSuffix(cpuInfoBuilder.String(), " | ")
@@ -111,11 +111,11 @@ func (wm *WorkerManager) logResourceUsage() {
 				info.ID, maxIDLen-len(info.ID), "", info.ElapsedTimeString, maxElapsedLen-len(info.ElapsedTimeString), "", info.CPUPercent, maxCPULen-len(info.CPUPercent), "", info.RAMInMB, maxRAMLen-len(info.RAMInMB), ""))
 
 		}
-		fmt.Printf("====== 🎮 TOTAL GPU USAGE:  %.2f%% =======\n", gpuPercent)
-		fmt.Printf("====== 💾 TOTAL RAM: %.2f MB | AVAILABLE RAM: %.2f MB =======\n", totalRAM, availableRAM)
-		fmt.Printf("====== 🖥️ CPU USAGE (%s)=======\n", cpuInfo)
-		fmt.Printf("====== 🤖 WORKER INFO =======\n%s\n", strings.Join(formattedWorkerInfo, "\n"))
-		fmt.Printf("====== ⏱️ TIME TAKEN FOR METRICS: %.2f s =======\n", time.Since(startTime).Seconds())
+		fmt.Printf("························ 🎮 TOTAL GPU USAGE:  %.2f%% \n", gpuPercent)
+		fmt.Printf("························ 💾 TOTAL RAM: %.2f MB | AVAILABLE RAM: %.2f MB \n", totalRAM, availableRAM)
+		fmt.Printf("························ 🖥️CPU USAGE (%s) \n", cpuInfo)
+		fmt.Printf("························ 🤖 WORKER INFO  ······································\n%s\n", strings.Join(formattedWorkerInfo, "\n"))
+		fmt.Printf("························ ⏱️ TIME TAKEN FOR METRICS: %.2f s ·····················\n", time.Since(startTime).Seconds())
 		time.Sleep(interval)
 	}
 }
