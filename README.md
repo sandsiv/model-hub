@@ -2,8 +2,8 @@
 
 ---
 
-<img width="300" src="doc/logo/docker-hub-logo.png" border="5px solid red"/>
-<img width="300" src="doc/logo/vertex-logo.png" border="5px solid red"/>
+<a href="https://hub.docker.com/r/devxpro/model-hub"> <img width="300" src="doc/logo/docker-hub-logo.png" border="5px solid red"/> </a>
+<a href="https://cloud.google.com/vertex-ai" style="float: left"><img width="300" src="doc/logo/vertex-logo.png" border="5px solid red"/> </a>
 
 This application is also available as a Docker image, which you can find on [Docker Hub](https://hub.docker.com/r/devxpro/model-hub).
 This image is fully compatible for use with [Vertex AI](https://cloud.google.com/vertex-ai).
