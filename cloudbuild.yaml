@@ -1,0 +1,12 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --tag=europe-docker.pkg.dev/sandsiv-infrastructure/vochub/model-hub:$TAG_NAME
+      - -f
+      - Dockerfile
+      - .
+
+timeout: 600s
+images:
+  - 'europe-docker.pkg.dev/sandsiv-infrastructure/vochub/model-hub:$TAG_NAME'

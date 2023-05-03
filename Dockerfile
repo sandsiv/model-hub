@@ -6,13 +6,15 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
-# build and install clerk executable
+# build and install model-hub executable
 COPY . .
 RUN go build -ldflags "-s -w" -o /model-hub
 
 FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
-RUN apt-get update && apt-get install -y python3.10 python3-pip sudo curl
-RUN pip install requests==2.29.0
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends python3.10 python3-pip sudo curl
+RUN pip install --no-cache-dir requests==2.29.0
 
 WORKDIR /bin
 COPY --from=0 /model-hub /bin/model-hub
