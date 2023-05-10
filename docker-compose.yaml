@@ -13,3 +13,18 @@ services:
       - ./model:/models
     ports:
       - '9080:8080'
+  model-hub-no-cuda:
+    build:
+      context: .
+      dockerfile: Dockerfile-no-cuda
+    tty: true
+    container_name: model-hub-no-cuda
+    environment:
+      - SERVER_PORT=8080
+      - CONFIG_PATH=/etc/config.yaml
+    volumes:
+      - ./config.yaml:/etc/config.yaml
+      - ./handler.py:/etc/handler.py
+      - ./model:/models
+    ports:
+      - '9080:8080'
