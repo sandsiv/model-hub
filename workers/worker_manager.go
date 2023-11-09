@@ -18,7 +18,7 @@ type WorkerManager struct {
 	failedWorkerChan    chan WorkerId                            // Channel for failed workers
 	workerAvailableChan map[models.ModelName]chan WorkerId       // Channel for notification about worker ready
 	modelNames          []models.ModelName                       // Models list
-	workerRequestChan   map[models.ModelName]chan *WorkerRequest // WorkerRequest channale by models
+	workerRequestChan   map[models.ModelName]chan *WorkerRequest // WorkerRequest channel by models
 	workerQueues        map[models.ModelName]*WorkerQueue        // WorkerQueue heap by model
 	mu                  sync.Mutex
 	logger              *zap.Logger
@@ -62,7 +62,7 @@ func (wm *WorkerManager) removeWorkerFromChannel(worker *Worker) {
 	wm.mu.Lock()
 	defer wm.mu.Unlock()
 
-	// Теперь обрабатываем очередь запросов на воркеров, удаляем воркера из всех запросов
+	// processing the worker request queue, removing worker from all requests
 	workerQueue := wm.workerQueues[worker.Model.Name]
 	newQueue := new(WorkerQueue)
 	heap.Init(newQueue)
@@ -121,7 +121,6 @@ func (wm *WorkerManager) processWorkerRequests(modelName models.ModelName) {
 				wm.workerAvailableChan[modelName] <- workerId
 				wm.mu.Unlock()
 				time.Sleep(1 * time.Second)
-				fmt.Println("1 * time.Second")
 				continue
 			}
 
@@ -133,7 +132,6 @@ func (wm *WorkerManager) processWorkerRequests(modelName models.ModelName) {
 			if exists {
 				nextRequest.worker = worker
 				worker.SetBusy()
-				fmt.Printf("Worker #%v with priority %d has been given", workerId, nextRequest.priority)
 				nextRequest.resultChan <- worker
 			} else {
 				wm.logger.Error("Worker not found", zap.String("workerId", string(workerId)))

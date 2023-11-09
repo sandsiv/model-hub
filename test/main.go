@@ -17,7 +17,7 @@ func main() {
 	go sendRequest(wg, 300)
 	time.Sleep(1 * time.Millisecond)
 	wg.Wait()
-	fmt.Println("Все запросы отправлены.")
+	fmt.Println("All requests sent.")
 }
 
 func sendRequest(wg *sync.WaitGroup, priority int) {
@@ -29,7 +29,7 @@ func sendRequest(wg *sync.WaitGroup, priority int) {
 			"priority": priority,
 		},
 	})
-	// Запуск 100 горутин для параллельной отправки запросов
+	// Launching 100 goroutines for concurrent request sending
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go sendPostRequest(wg, url, contentType, requestBody)
@@ -38,14 +38,14 @@ func sendRequest(wg *sync.WaitGroup, priority int) {
 
 func sendPostRequest(wg *sync.WaitGroup, url string, contentType string, body []byte) {
 	defer wg.Done()
-	fmt.Println("Отправляем запрос")
+	fmt.Println("Sending request")
 	resp, err := http.Post(url, contentType, bytes.NewBuffer(body))
 	if err != nil {
-		fmt.Println("Ошибка при отправке запроса:", err)
+		fmt.Println("Error sending request:", err)
 		return
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("Запрос отправлен, статус:", resp.Status)
+	fmt.Println("Request sent, status:", resp.Status)
 	return
 }
