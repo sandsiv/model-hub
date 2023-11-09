@@ -16,7 +16,7 @@ type WorkerId string
 type WorkerManager struct {
 	workers             map[WorkerId]*Worker                     // Existing workers
 	failedWorkerChan    chan WorkerId                            // Channel for failed workers
-	workerAvailableChan chan WorkerId                            // Channel for notification about worker ready
+	workerAvailableChan map[models.ModelName]chan WorkerId       // Channel for notification about worker ready
 	modelNames          []models.ModelName                       // Models list
 	workerRequestChan   map[models.ModelName]chan *WorkerRequest // WorkerRequest channale by models
 	workerQueues        map[models.ModelName]*WorkerQueue        // WorkerQueue heap by model
@@ -31,7 +31,7 @@ func NewWorkerManager(cfg *config.Config, logger *zap.Logger) *WorkerManager {
 	workerRequestChan := make(map[models.ModelName]chan *WorkerRequest)
 	var modelNames []models.ModelName
 	port := 7777
-	workerAvailableChan := make(chan WorkerId)
+	workerAvailableChan := make(map[models.ModelName]chan WorkerId)
 	failedWorkerChan := make(chan WorkerId)
 	for _, model := range cfg.Models {
 		modelNames = append(modelNames, model.Name)
@@ -44,6 +44,7 @@ func NewWorkerManager(cfg *config.Config, logger *zap.Logger) *WorkerManager {
 		}
 		workerRequestChan[model.Name] = make(chan *WorkerRequest)
 		workerQueues[model.Name] = new(WorkerQueue)
+		workerAvailableChan[model.Name] = make(chan WorkerId, model.Workers)
 		heap.Init(workerQueues[model.Name])
 	}
 	return &WorkerManager{
@@ -114,27 +115,24 @@ func (wm *WorkerManager) processWorkerRequests(modelName models.ModelName) {
 			heap.Push(wm.workerQueues[modelName], request)
 			wm.mu.Unlock()
 
-		case workerId := <-wm.workerAvailableChan:
-			// Воркер стал доступен, обработаем следующий запрос в куче, если он есть
+		case workerId := <-wm.workerAvailableChan[modelName]:
 			wm.mu.Lock()
 			if wm.workerQueues[modelName].Len() == 0 {
-				// Если нет ожидающих запросов, ничего не делаем
+				wm.workerAvailableChan[modelName] <- workerId
 				wm.mu.Unlock()
 				continue
 			}
 
-			// Извлекаем запрос с наивысшим приоритетом из кучи
+			// Fetch prioritized request from heap
 			nextRequest := heap.Pop(wm.workerQueues[modelName]).(*WorkerRequest)
 			wm.mu.Unlock()
 
-			// Получаем воркера, который стал доступен, и отправляем его обрабатывать запрос
 			worker, exists := wm.workers[workerId]
 			if exists {
 				nextRequest.worker = worker
 				worker.SetBusy()
 				nextRequest.resultChan <- worker
 			} else {
-				// Если воркер с данным ID не найден, логируем ошибку
 				wm.logger.Error("Worker not found", zap.String("workerId", string(workerId)))
 			}
 		}
@@ -171,6 +169,7 @@ func (wm *WorkerManager) SetWorkerAvailable(workerID WorkerId) {
 	worker, ok := wm.workers[workerID]
 	if ok {
 		worker.SetAvailable()
-		wm.workerAvailableChan <- workerID
+
+		wm.workerAvailableChan[worker.Model.Name] <- workerID
 	}
 }
