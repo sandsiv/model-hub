@@ -21,6 +21,7 @@ To use ModelHub, follow these steps:
 #### 1. Prepare your model folder
 
 Place the model folders in the `models` directory of your project.
+>If you don't have model files locally and they are part of some Python library, you can skip this step
 
 #### 2. Create a `requirements.txt` file
 

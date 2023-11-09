@@ -30,7 +30,7 @@ func (h *Handlers) PredictHandler(c *gin.Context) {
 	}
 	model := models.ModelName(modelString)
 
-	worker, err := h.manager.GetAvailableWorker(model)
+	worker, err := h.manager.GetAvailableWorker(model, 1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get available worker"})
 		return
