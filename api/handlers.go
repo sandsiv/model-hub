@@ -28,9 +28,14 @@ func (h *Handlers) PredictHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "model parameter is missing or has an invalid format"})
 		return
 	}
+	priorityRaw, ok := req.Params["priority"].(float64)
+	if !ok {
+		priorityRaw = 0
+	}
+	priority := int(priorityRaw)
 	model := models.ModelName(modelString)
 
-	worker, err := h.manager.GetAvailableWorker(model, 1)
+	worker, err := h.manager.GetAvailableWorker(model, priority)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get available worker"})
 		return

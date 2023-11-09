@@ -133,6 +133,7 @@ func (wm *WorkerManager) processWorkerRequests(modelName models.ModelName) {
 			if exists {
 				nextRequest.worker = worker
 				worker.SetBusy()
+				fmt.Printf("Worker #%v with priority %d has been given", workerId, nextRequest.priority)
 				nextRequest.resultChan <- worker
 			} else {
 				wm.logger.Error("Worker not found", zap.String("workerId", string(workerId)))
