@@ -131,10 +131,16 @@ After building the Docker image, you can run it and use ModelHub on any machine,
             "label1", "label2"
         ],
         "param2": "value2",
-        "param3": "value3"
+        "param3": "value3",
+      
+        "priority": 50,
+        "metadata": "Some Metadata"
     }
 }
 ```
+`priority` and `metadata` parameters is optional. By default, priority=1.
+The higher the priority, the faster the request will be processed. This can be useful in cases where you receive many requests simultaneously on model-hub and need to ensure faster access to workers for more important tasks.
+`metadata` is useful in cases where it's necessary to understand from the logs where and how a request is being processed. Metadata can be a string with any content. You will see this string in the logs after the prediction has been successfully made.
 > As Vertex AI only supports a single endpoint, it is mandatory to specify the name of the model in the parameters section to indicate which model to use for prediction. This allows you to deploy and manage multiple models using the approach of passing the model name as a parameter.
 ### POST /ping
 

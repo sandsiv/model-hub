@@ -26,6 +26,7 @@ func sendRequest(wg *sync.WaitGroup, priority int) {
 		"parameters": map[string]interface{}{
 			"model":    "model2",
 			"priority": priority,
+			"metadata": "From server 1",
 		},
 	})
 	// Launching 100 goroutines for concurrent request sending
