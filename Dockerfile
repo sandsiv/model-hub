@@ -1,4 +1,4 @@
-FROM golang:1.19.1-bullseye
+FROM golang:1.21.4-bullseye
 
 WORKDIR /src
 
@@ -10,7 +10,7 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -ldflags "-s -w" -o /model-hub
 
-FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+FROM nvidia/cuda:12.3.0-runtime-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends python3.10 python3-pip sudo curl

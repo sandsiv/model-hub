@@ -172,6 +172,7 @@ func (wm *WorkerManager) GetAvailableWorker(modelName models.ModelName, priority
 func (wm *WorkerManager) SetWorkerAvailable(workerID WorkerId) {
 	worker, ok := wm.workers[workerID]
 	if ok {
+		worker.SetLoaded()
 		worker.SetAvailable()
 
 		wm.workerAvailableChan[worker.Model.Name] <- workerID
