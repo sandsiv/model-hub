@@ -120,7 +120,10 @@ func (wm *WorkerManager) processWorkerRequests(modelName models.ModelName) {
 			if wm.workerQueues[modelName].Len() == 0 {
 				wm.workerAvailableChan[modelName] <- workerId
 				wm.mu.Unlock()
-				time.Sleep(1 * time.Second)
+				request := <-wm.workerRequestChan[modelName]
+				go func() {
+					wm.workerRequestChan[modelName] <- request
+				}()
 				continue
 			}
 

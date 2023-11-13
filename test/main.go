@@ -5,17 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"sync"
-	"time"
 )
 
 func main() {
 	wg := &sync.WaitGroup{}
 
-	go sendRequest(wg, 100)
-	go sendRequest(wg, 200)
-	go sendRequest(wg, 300)
-	time.Sleep(1 * time.Millisecond)
+	sendRequest(wg, 100)
+	sendRequest(wg, 200)
+	sendRequest(wg, 300)
 	wg.Wait()
 	fmt.Println("All requests sent.")
 }
@@ -31,17 +30,20 @@ func sendRequest(wg *sync.WaitGroup, priority int) {
 	})
 	// Launching 100 goroutines for concurrent request sending
 	for i := 0; i < 100; i++ {
-		wg.Add(1)
-		go sendPostRequest(wg, url, contentType, requestBody)
+		go sendPostRequest(wg, url, contentType, requestBody, strconv.Itoa(priority)+"--"+strconv.Itoa(i))
 	}
 }
 
-func sendPostRequest(wg *sync.WaitGroup, url string, contentType string, body []byte) {
+func sendPostRequest(wg *sync.WaitGroup, url string, contentType string, body []byte, meta string) {
+	wg.Add(1)
 	defer wg.Done()
 	fmt.Println("Sending request")
 	resp, err := http.Post(url, contentType, bytes.NewBuffer(body))
+	fmt.Println("Send " + meta)
 	if err != nil {
 		fmt.Println("Error sending request:", err)
+		fmt.Println("Retry")
+		sendPostRequest(wg, url, contentType, body, meta)
 		return
 	}
 	defer resp.Body.Close()
