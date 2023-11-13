@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"model-hub/models"
@@ -28,9 +29,14 @@ func (h *Handlers) PredictHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "model parameter is missing or has an invalid format"})
 		return
 	}
+	priorityRaw, ok := req.Params["priority"].(float64)
+	if !ok {
+		priorityRaw = 1
+	}
+	priority := int(priorityRaw)
 	model := models.ModelName(modelString)
 
-	worker, err := h.manager.GetAvailableWorker(model)
+	worker, err := h.manager.GetAvailableWorker(model, priority)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get available worker"})
 		return
@@ -38,12 +44,23 @@ func (h *Handlers) PredictHandler(c *gin.Context) {
 
 	preds, err := worker.Predict(req)
 	h.manager.SetWorkerAvailable(worker.ID)
+	h.logComplete(ok, req, priority)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, preds)
+}
+
+func (h *Handlers) logComplete(ok bool, req models.PredictRequest, priority int) {
+	var info string
+	metadata, ok := req.Params["metadata"].(string)
+	if ok {
+		info = fmt.Sprintf("%v. ", metadata)
+	}
+	info += fmt.Sprintf("(Priority: %d)", priority)
+	h.logger.Info("Prediction complete. " + info)
 }
 
 func (h *Handlers) PingHandler(c *gin.Context) {

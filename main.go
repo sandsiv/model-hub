@@ -20,7 +20,6 @@ func main() {
 	logger := createLogger()
 
 	defer logger.Sync()
-
 	workerManager := workers.NewWorkerManager(cfg, logger)
 	logger.Info("Starting workers")
 	go workerManager.Initialize()
