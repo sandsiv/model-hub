@@ -1,4 +1,4 @@
-FROM golang:1.21.4-bullseye
+FROM golang:1.21.6-bookworm
 
 WORKDIR /src
 
@@ -10,11 +10,11 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -ldflags "-s -w" -o /model-hub
 
-FROM nvidia/cuda:12.3.0-runtime-ubuntu22.04
+FROM nvidia/cuda:12.3.1-runtime-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends python3.10 python3-pip sudo curl
-RUN pip install --no-cache-dir requests==2.29.0
+RUN pip install --no-cache-dir requests==2.31.0
 
 WORKDIR /bin
 COPY --from=0 /model-hub /bin/model-hub

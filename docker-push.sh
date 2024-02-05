@@ -17,7 +17,7 @@ docker buildx build --platform linux/amd64,linux/arm64 -t devxpro/model-hub:$VER
 docker buildx build --platform linux/amd64,linux/arm64 -t devxpro/model-hub:latest --push .
 
 # Build and push the image for model-hub-no-cuda
-docker buildx build --platform linux/amd64,linux/arm64 -t devxpro/model-hub:${VERSION}-no-cuda-slim --file Dockerfile-no-cuda --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t devxpro/model-hub:${VERSION}-no-cuda --file Dockerfile-no-cuda --push .
 docker buildx build --platform linux/amd64,linux/arm64 -t devxpro/model-hub:latest-no-cuda --file Dockerfile-no-cuda --push .
 
 docker buildx use default
