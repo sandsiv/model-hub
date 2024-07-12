@@ -7,6 +7,7 @@ import (
 	"model-hub/models"
 	"model-hub/workers"
 	"net/http"
+	"os"
 )
 
 type Handlers struct {
@@ -19,6 +20,15 @@ func NewHandlers(manager *workers.WorkerManager, logger *zap.Logger) *Handlers {
 }
 
 func (h *Handlers) PredictHandler(c *gin.Context) {
+	apiKey := os.Getenv("API_KEY")
+	if apiKey != "" {
+		clientAPIKey := c.GetHeader("X-API-KEY")
+		if clientAPIKey != apiKey {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			return
+		}
+	}
+
 	var req models.PredictRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to decode request body"})
