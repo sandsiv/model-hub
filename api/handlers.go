@@ -29,10 +29,14 @@ func (h *Handlers) PredictHandler(c *gin.Context) {
 		}
 	}
 
+	debug := os.Getenv("DEBUG")
 	var req models.PredictRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to decode request body"})
 		return
+	}
+	if debug == "1" {
+		h.logger.Info("Received request", zap.Any("request_body", req))
 	}
 	modelString, ok := req.Params["model"].(string)
 	if !ok {
@@ -55,6 +59,9 @@ func (h *Handlers) PredictHandler(c *gin.Context) {
 	preds, err := worker.Predict(req)
 	h.manager.SetWorkerAvailable(worker.ID)
 	h.logComplete(ok, req, priority)
+	if debug == "1" {
+		h.logger.Info("Sending response", zap.Any("response_body", preds))
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 		return
