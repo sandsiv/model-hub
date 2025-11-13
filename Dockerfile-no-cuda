@@ -1,4 +1,4 @@
-FROM golang:1.21.6-bookworm
+FROM golang:1.24.9-bookworm AS builder
 
 WORKDIR /src
 
@@ -10,15 +10,17 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -ldflags "-s -w" -o /model-hub
 
-FROM python:3.10.13-bookworm
+FROM python:3.10.19-bookworm
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends sudo curl
-RUN pip install --no-cache-dir requests==2.29.0
+RUN apt-get update && apt-get install -y --no-install-recommends python3.10 python3-pip sudo curl \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /bin
-COPY --from=0 /model-hub /bin/model-hub
+COPY --from=builder /model-hub /bin/model-hub
 COPY ./worker.py /bin/worker.py
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements.txt
 
 ENV CONFIG_PATH="/etc/config.yaml"
 ENV SERVER_PORT="8080"
