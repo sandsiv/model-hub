@@ -20,6 +20,9 @@ updates:
         versions:
           - ">= 1.25.0"
           - "< 1.24.0"
+      - dependency-name: "*"
+        paths:
+          - "Dockerfile"
 
   - package-ecosystem: "gomod"
     directory: "/"
