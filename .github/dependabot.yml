@@ -1,0 +1,56 @@
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "master"
+    open-pull-requests-limit: 3
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "23:35"
+    assignees:
+      - "Sergius71"
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "Docker"
+    rebase-strategy: "auto"
+    ignore:
+      - dependency-name: "golang"
+        versions:
+          - ">= 1.25.0"
+          - "< 1.24.0"
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    target-branch: "master"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:10"
+    assignees:
+      - "Sergius71"
+    commit-message:
+      prefix: "Go"
+    rebase-strategy: "auto"
+
+    groups:
+      other-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      python-packages:
+        patterns:
+          - "*"
