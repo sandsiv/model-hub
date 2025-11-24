@@ -5,7 +5,7 @@ go 1.24.9
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/shirou/gopsutil/v3 v3.24.5
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 	gopkg.in/yaml.v2 v2.4.0
 )
 
