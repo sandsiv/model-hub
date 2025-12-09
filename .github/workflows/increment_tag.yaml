@@ -18,11 +18,11 @@ jobs:
 
       - name: Create and push tag
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
           echo "Latest tag: $LATEST_TAG"
           
-          if ! [[ $LATEST_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "WARNING: Latest tag '$LATEST_TAG' does not match format v1.2.3"
+          if ! [[ $LATEST_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "WARNING: Latest tag '$LATEST_TAG' does not match format 1.2.3"
             echo "Skipping"
             exit 0
           fi
@@ -34,7 +34,7 @@ jobs:
           PATCH=${VERSION_PARTS[2]}
           
           PATCH=$((PATCH + 1))
-          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          NEW_TAG="${MAJOR}.${MINOR}.${PATCH}"
           
           echo "New tag: $NEW_TAG"
           
