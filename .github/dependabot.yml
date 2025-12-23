@@ -5,9 +5,7 @@ updates:
     target-branch: "master"
     open-pull-requests-limit: 3
     schedule:
-      interval: "weekly"
-      day: "sunday"
-      time: "23:35"
+      interval: "monthly"
     assignees:
       - "Sergius71"
     allow:
@@ -29,9 +27,7 @@ updates:
     target-branch: "master"
     open-pull-requests-limit: 5
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:10"
+      interval: "monthly"
     assignees:
       - "Sergius71"
     commit-message:
@@ -52,7 +48,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       python-packages:
         patterns:
